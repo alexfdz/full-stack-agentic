@@ -27,7 +27,19 @@ git branch --show-current
 
 ### 2. Delegar en speckit.specify
 
-Invocar `/speckit.specify` pasando `$ARGUMENTS` como descripción de la feature.
+Invocar `/speckit.specify` pasando `$ARGUMENTS` como descripción de la feature, aplicando las siguientes reglas de gestión de preguntas:
+
+**Clasificación de preguntas** — cuando `speckit.specify` identifique marcadores `[NEEDS CLARIFICATION]`, clasificar cada uno antes de presentarlo:
+
+- **No técnica** (hacerla al PM): intención de negocio, prioridades, alcance funcional, flujos de usuario, terminología.
+- **Técnica** (resolver autónomamente): autenticación, autorización, seguridad, compliance, retención de datos, patrones de integración, restricciones de infraestructura.
+
+**Para preguntas técnicas**, NO preguntar al PM. En su lugar:
+1. Responderlas usando el contexto del proyecto: código existente, `.agents/rules/base.md`, stack del proyecto (Python/FastAPI + TypeScript/Node 22), estándares del sector.
+2. Si hay información suficiente: tomar la decisión y registrarla internamente como **Decisión propuesta por IA**.
+3. Si no hay información suficiente: registrarla internamente como **Pregunta sin resolver** y continuar.
+
+Guardar internamente la lista de decisiones técnicas (respondidas y no respondidas) para el paso 6.
 
 `speckit.specify` se encarga de:
 - Generar el nombre corto y número de rama (`NNN-short-name`)
@@ -90,7 +102,44 @@ EOF
 )"
 ```
 
-### 6. Informe final
+### 6. Registrar decisiones técnicas en el PR
+
+Si durante el paso 2 hubo preguntas técnicas, añadir **un comentario individual por cada pregunta** al PR recién creado.
+
+Para cada pregunta que la IA pudo responder:
+
+```bash
+gh pr comment --body "**Pregunta técnica detectada:** \"[pregunta identificada]\"
+
+**Respuestas propuestas:** A. \"[opción A]\" B. \"[opción B]\" C. \"[opción C]\"
+
+**Respuesta elegida autónomamente:** Hemos elegido la \"[opción elegida]\" porque \"[razonamiento breve]\"
+
+> 💬 Si quieres cambiar esta decisión, responde con: \`Corrección: [letra o respuesta]\`"
+```
+
+Para cada pregunta que la IA no pudo resolver:
+
+```bash
+gh pr comment --body "**Pregunta técnica detectada:** \"[pregunta identificada]\"
+
+**Respuestas posibles:** A. \"[opción A]\" B. \"[opción B]\" C. \"[opción C]\"
+
+⚠️ **Sin resolver — requiere input del equipo de desarrollo.**
+
+> 💬 Para responder, comenta con: \`Respuesta: [letra o respuesta]\`"
+```
+
+Si no hubo preguntas técnicas en absoluto, omitir este paso por completo.
+
+### 7. Retro de fase
+
+Invocar `/speckit.retro` con contexto: "after specify phase".
+
+**Esperar a que `speckit.retro` termine antes de continuar.**
+Si devuelve estado **Blocked**: no mostrar el informe final hasta que el usuario resuelva los bloqueantes.
+
+### 8. Informe final
 
 ```
 ✅ Feature iniciada
@@ -106,7 +155,7 @@ Comparte el PR con el equipo de desarrollo
 para que revisen el spec.
 
 Cuando hayan comentado, ejecuta:
-/consolidate-spec
+/continue
 ─────────────────────────────────────────
 ```
 

@@ -14,7 +14,7 @@ gh pr view --json number,state,url,body
 - Si la rama es `main` o `master`: ERROR "No estás en una rama de feature. Ejecuta /status."
 - Si no hay PR: ERROR "No hay PR abierto. ¿Ejecutaste /start?"
 
-### 2. Gate: tareas generadas
+### 2. Gate: tareas generadas y correcciones técnicas aplicadas
 
 Verificar en el body del PR:
 - `- [x] Spec creado` ✓
@@ -23,6 +23,14 @@ Verificar en el body del PR:
 - `- [x] Plan aprobado por el equipo de desarrollo` ✓
 - `- [x] Tareas generadas` ✓
 
+Además, leer los comentarios del PR buscando correcciones o respuestas del equipo a decisiones técnicas previas (comentarios que empiecen con `Corrección:` o `Respuesta:`):
+
+```bash
+gh pr view --json comments -q '.comments[].body'
+```
+
+Si hay correcciones: aplicarlas en `tasks.md` o en los artefactos afectados antes de delegar en `speckit.implement`. Si hay respuestas a preguntas sin resolver: incorporarlas como contexto adicional en la delegación.
+
 Si las tareas no están generadas:
 
 ```
@@ -30,6 +38,23 @@ Si las tareas no están generadas:
 
 Las tareas no han sido generadas todavía.
 Ejecuta /tasks primero.
+```
+
+**PARAR.**
+
+Verificar que no quedan decisiones técnicas sin respuesta: entre los comentarios del PR, identificar todos los que contengan "Sin resolver — requiere input del equipo de desarrollo" y comprobar que para cada uno existe un comentario posterior que empiece con `Respuesta:`.
+
+Si alguna decisión técnica no tiene respuesta del equipo:
+
+```
+🚫 BLOQUEADO — Decisiones técnicas sin responder
+
+Las siguientes preguntas técnicas deben ser respondidas antes de implementar:
+
+[listar las preguntas sin respuesta]
+
+El equipo debe responder en el PR con:
+  Respuesta: [letra o respuesta]
 ```
 
 **PARAR.**
@@ -76,7 +101,14 @@ Añadir fila:
 gh pr edit --body "<body-actualizado>"
 ```
 
-### 7. Informe final
+### 7. Retro de fase
+
+Invocar `/speckit.retro` con contexto: "after implement phase".
+
+**Esperar a que `speckit.retro` termine antes de continuar.**
+Si devuelve estado **Blocked**: no mostrar el informe final hasta que el usuario resuelva los bloqueantes.
+
+### 8. Informe final
 
 ```
 ✅ Código generado

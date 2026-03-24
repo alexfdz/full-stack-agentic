@@ -47,7 +47,7 @@ PROGRESO:
 
 ➡️  SIGUIENTE
     Cuando el equipo apruebe el plan en GitHub, ejecuta:
-    /tasks
+    /build
 ```
 
 ### 3. Cambios sin guardar

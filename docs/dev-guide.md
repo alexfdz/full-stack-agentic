@@ -32,17 +32,21 @@ El kit está dividido en dos capas que conviven en `.claude/commands/`:
 │   ├── speckit.retro.md
 │   └── speckit.constitution.md
 │
-└── project commands   ← nuestro kit (orquestadores)
-    ├── start.md
+├── comandos PM        ← flujo de cara al usuario
+│   ├── start.md
+│   ├── continue.md
+│   ├── build.md
+│   ├── submit.md
+│   ├── deploy-to-stage.md
+│   ├── status.md
+│   └── context.md
+│
+└── comandos internos  ← invocados por los comandos PM
     ├── consolidate-spec.md
     ├── plan.md
     ├── tasks.md
-    ├── checklist.md
     ├── implement.md
-    ├── submit.md
-    ├── deploy-to-stage.md
-    ├── status.md
-    └── context.md
+    └── checklist.md
 ```
 
 **Principio de diseño:** los comandos del kit no tienen lógica propia sobre specs, planes o código. Delegan completamente en los `speckit.*` correspondientes. Su responsabilidad exclusiva es:
@@ -53,18 +57,27 @@ El kit está dividido en dos capas que conviven en `.claude/commands/`:
 
 ### Relación entre comandos
 
-| Nuestro comando | Delega en | Responsabilidad propia |
+**Comandos PM (cara al usuario):**
+
+| Comando PM | Delega en | Responsabilidad propia |
 |---|---|---|
 | `/start` | `speckit.specify` | Abrir PR draft, push inicial |
-| `/consolidate-spec` | `speckit.clarify` | Verificar gate, commit, actualizar PR |
-| `/plan` | `speckit.plan` | Verificar gate, commit, actualizar PR |
-| `/tasks` | `speckit.tasks` + `speckit.taskstoissues` | Verificar gate, commit, actualizar PR |
-| `/checklist` | `speckit.checklist` | Commit (sin gate) |
-| `/implement` | `speckit.implement` | Verificar gate, sync con main |
+| `/continue` | `/consolidate-spec` y/o `/plan` | Detectar estado, informar al PM, encadenar pasos |
+| `/build` | `/tasks` + `/implement` | Verificar gate de plan aprobado, informar al PM |
 | `/submit` | — | Git add/commit/push, PR ready |
 | `/deploy-to-stage` | — | Verificar aprobación, squash merge |
 | `/status` | — | Leer estado del PR y orientar |
 | `/context` | — | Mostrar uso de contexto de sesión |
+
+**Comandos internos (invocados por los PM):**
+
+| Comando interno | Delega en | Responsabilidad propia |
+|---|---|---|
+| `/consolidate-spec` | `speckit.clarify` | Verificar gate, commit, actualizar PR |
+| `/plan` | `speckit.plan` | Verificar gate, commit, actualizar PR |
+| `/tasks` | `speckit.tasks` + `speckit.taskstoissues` | Verificar gate, commit, actualizar PR |
+| `/implement` | `speckit.implement` | Verificar gate, sync con main |
+| `/checklist` | `speckit.checklist` | Commit (sin gate) |
 
 ### Estado del PR como fuente de verdad
 
@@ -75,8 +88,8 @@ El estado del flujo vive en el body del PR, no en ficheros locales. Los checkbox
 - [x] Spec creado
 - [x] Spec aprobado por el equipo de desarrollo
 - [x] Plan generado
-- [ ] Plan aprobado por el equipo de desarrollo   ← bloquea /tasks
-- [ ] Tareas generadas                             ← bloquea /implement
+- [ ] Plan aprobado por el equipo de desarrollo   ← bloquea /build (y /tasks internamente)
+- [ ] Tareas generadas                             ← gestionado internamente por /build
 - [ ] Código generado                              ← bloquea /submit
 - [ ] En revisión de código                        ← bloquea /deploy-to-stage
 - [ ] Publicado
@@ -287,17 +300,17 @@ Cuando la PM ejecuta `/start`, el PR draft se abre con `spec.md`. Tú debes:
 4. Dejar comentarios inline si hay algo que cambiar (la PM ejecutará `/consolidate-spec` para integrarlos)
 5. Cuando esté bien: **Review changes → Approve**
 
-Tras tu aprobación, la PM puede ejecutar `/plan`.
+Tras tu aprobación, la PM puede ejecutar `/continue` para generar el plan.
 
 ### Aprobar el plan
 
-Cuando la PM ejecuta `/plan`, el PR se actualiza con `research.md`, `data-model.md` y `contracts/`. Tú debes:
+Cuando `/continue` ejecuta `/plan`, el PR se actualiza con `research.md`, `data-model.md` y `contracts/`. Tú debes:
 
 1. Revisar los artefactos técnicos en **Files changed**
 2. Dejar comentarios si hay decisiones técnicas que cambiar
 3. Cuando esté bien: **Review changes → Approve**
 
-Tras tu aprobación, la PM puede ejecutar `/tasks`.
+Tras tu aprobación, la PM puede ejecutar `/build`.
 
 ### Revisar el código y aprobarlo
 

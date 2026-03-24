@@ -18,7 +18,7 @@ gh pr view --json number,state,url,body,isDraft
 
 Verificar en el body del PR: `- [x] Código generado`
 
-Si no está marcado: ERROR "El código no ha sido generado todavía. Ejecuta /implement primero."
+Si no está marcado: ERROR "El código no ha sido generado todavía. Ejecuta /build primero."
 
 ### 3. Verificar que hay cambios para guardar
 

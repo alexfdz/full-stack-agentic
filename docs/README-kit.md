@@ -2,49 +2,76 @@
 
 Este kit está diseñado para que PMs y diseñadoras puedan contribuir código con Claude Code sin necesitar conocimientos de git.
 
-## Ficheros de este kit
+## Comandos disponibles
+
+### Flujo PM (comandos de cara al usuario)
 
 ```
-.specify/
-├── memory/
-│   └── constitution.md          ← Principios del proyecto (ya generado)
-├── commands/
-│   ├── new-feature.md         ← /project.new-feature
-│   ├── deliver.md              ← /project.deliver
-│   ├── status.md                ← /project.status
-│   ├── sync.md           ← /project.sync
-│   ├── deploy-to-stage.md      ← /deploy-to-stage
-│   ├── explore.md              ← /project.explore
-│   ├── discard.md             ← /project.discard
-│   └── consolidate-spec.md       ← /project.consolidate-spec
-├── scripts/
-│   └── pr-template.md           ← Template de PR
-└── specs/                       ← Se crea automáticamente con /project.new-feature
+.claude/commands/
+├── start.md              ← /start          Inicia una nueva feature
+├── continue.md           ← /continue       Avanza al siguiente paso (repetible)
+├── build.md              ← /build          Genera el código cuando el plan esté aprobado
+├── submit.md             ← /submit         Comparte el código para revisión del equipo
+├── deploy-to-stage.md    ← /deploy-to-stage Publica a staging con squash merge
+├── status.md             ← /status         Muestra en qué punto del flujo estás
+└── context.md            ← /context        Muestra cuánta memoria le queda a Claude
+```
 
-docs/
-└── onboarding.md                ← Guía para PMs y diseñadoras
+### Comandos internos (no usar directamente)
+
+```
+.claude/commands/
+├── consolidate-spec.md   ← /consolidate-spec  (invocado por /continue)
+├── plan.md               ← /plan              (invocado por /continue)
+├── tasks.md              ← /tasks             (invocado por /build)
+├── implement.md          ← /implement         (invocado por /build)
+└── checklist.md          ← /checklist         (opcional, validación de requirements)
+```
+
+### SpecKit (motor interno)
+
+```
+.claude/commands/
+├── speckit.specify.md
+├── speckit.clarify.md
+├── speckit.plan.md
+├── speckit.tasks.md
+├── speckit.implement.md
+├── speckit.taskstoissues.md
+├── speckit.retro.md
+├── speckit.checklist.md
+├── speckit.analyze.md
+└── speckit.constitution.md
+```
+
+## Artefactos por feature
+
+```
+specs/
+└── NNN-nombre-feature/
+    ├── spec.md           ← Especificación funcional
+    ├── research.md       ← Investigación técnica
+    ├── data-model.md     ← Modelo de datos
+    ├── plan.md           ← Plan de implementación
+    ├── tasks.md          ← Tareas ordenadas por dependencias
+    ├── contracts/        ← Contratos de interfaz
+    └── lessons-learned.md
 ```
 
 ## Setup inicial (solo el equipo de desarrollo)
 
-1. Inicializa spec-kit:
+1. Asegúrate de tener `gh` (GitHub CLI) instalado y autenticado:
+   ```bash
+   gh auth login
    ```
-   specify init . --ai claude
-   ```
 
-2. Copia los ficheros de commands a `.specify/commands/`
-
-3. Copia `constitution.md` a `.specify/memory/constitution.md`
-
-4. Copia `onboarding.md` a `docs/onboarding.md`
-
-5. Crea las ramas base:
-   ```
+2. Crea la rama `staging` si no existe:
+   ```bash
    git checkout -b staging && git push origin staging
    git checkout main
    ```
 
-6. Rellena la sección 10 del `constitution.md` con las decisiones técnicas del proyecto.
+3. Comparte `docs/onboarding.md` con el equipo de PMs y diseñadoras.
 
 ### Instalar la barra de estado (una vez por máquina, cada persona del equipo)
 
@@ -84,12 +111,13 @@ Reinicia Claude Code. Verás la barra en la parte inferior del terminal:
 
 ## Onboarding de PMs y diseñadoras
 
-Comparte `docs/onboarding.md` con ellas y haz una sesión de 30 minutos donde ejecuten `/project.new-feature` juntas por primera vez.
+Comparte `docs/onboarding.md` con ellas y haz una sesión de 30 minutos donde ejecuten `/start` juntas por primera vez.
 
 Los únicos comandos que necesitan recordar son:
-- `/project.new-feature` — empezar algo nuevo
-- `/project.deliver` — compartir su trabajo
-- `/project.status` — saber dónde están
-- `/project.sync` — ponerse al día
+- `/start` — empezar algo nuevo
+- `/continue` — avanzar al siguiente paso
+- `/build` — generar el código
+- `/submit` — compartir su trabajo
+- `/deploy-to-stage` — publicar a staging
 
 El resto aparece de forma natural en el flujo.

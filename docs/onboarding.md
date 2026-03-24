@@ -39,36 +39,23 @@ Estos son los únicos comandos que necesitas. Escríbelos en Claude Code exactam
 
 Escribe `/start` seguido de una descripción de lo que quieres construir. Claude se encarga de todo lo demás: crea tu espacio de trabajo, abre la sala de revisión y prepara el spec.
 
----
-
-### `/consolidate-spec`
-**Cuándo usarlo:** Cuando el equipo ha dejado comentarios en la sala de revisión y quieres integrarlos en el spec.
-
-Claude lee todos los comentarios y los incorpora al spec. Puedes ejecutarlo tantas veces como haya rondas de feedback.
+```
+/start quiero que los usuarios puedan restablecer su contraseña
+```
 
 ---
 
-### `/plan`
-**Cuándo usarlo:** Cuando el equipo ha aprobado el spec.
+### `/continue`
+**Cuándo usarlo:** Cada vez que el equipo ha hecho algo (comentado, aprobado) y quieres avanzar al siguiente paso.
 
-Claude genera el plan técnico. Requiere que el spec esté aprobado — si no lo está, te avisará.
-
----
-
-### `/tasks`
-**Cuándo usarlo:** Cuando el equipo ha aprobado el plan técnico.
-
-Claude descompone el plan en tareas concretas y las convierte en issues en GitHub.
+Claude detecta automáticamente en qué punto estás y hace lo que toca: integrar feedback, generar el plan técnico, o avisarte de que ya puedes construir. Puedes ejecutarlo tantas veces como haga falta.
 
 ---
 
-### `/checklist`
-**Cuándo usarlo:** (Opcional) Cuando quieres validar que el spec está bien escrito antes de implementar.
+### `/build`
+**Cuándo usarlo:** Cuando el equipo ha aprobado el plan técnico y quieres que Claude escriba el código.
 
----
-
-### `/implement`
-**Cuándo usarlo:** Cuando las tareas están generadas y quieres que Claude escriba el código.
+Claude genera todo el código de la feature. Requiere que el plan esté aprobado — si no lo está, te avisará.
 
 ---
 
@@ -110,16 +97,16 @@ Ronda 1 ── Quien abre la feature escribe el draft inicial del spec con /star
 Ronda 2 ── Las demás leen y dejan comentarios en la sala de revisión
            (nunca editáis el fichero directamente)
                ↓
-Ronda 3 ── /consolidate-spec fusiona todos los comentarios
+Ronda 3 ── /continue fusiona todos los comentarios
                ↓
 Ronda 4 ── Revisión final antes de pasar al plan técnico
 ```
 
 ### En la práctica
 
-- **Escribes el spec** → ejecutas `/submit` → avisas al equipo por Slack
+- **Escribes el spec** → avisas al equipo por Slack con el enlace al PR
 - **Recibes el aviso** → vas a la sala de revisión en GitHub → dejas tus comentarios
-- **Cuando todas han comentado** → quien abrió la feature ejecuta `/consolidate-spec`
+- **Cuando todas han comentado** → quien abrió la feature ejecuta `/continue`
 - **Revisión final** → el equipo aprueba en GitHub antes de continuar
 
 ---
@@ -129,17 +116,13 @@ Ronda 4 ── Revisión final antes de pasar al plan técnico
 ```
 /start "descripción"
         ↓
-   Rondas de spec (comentarios + /consolidate-spec)
-        ↓
-   El equipo aprueba el spec  ← checkpoint obligatorio
-        ↓
-/plan → plan técnico generado
+   /continue (repetir hasta que el plan esté aprobado)
+   — integra feedback del equipo
+   — genera el plan técnico cuando el spec esté aprobado
         ↓
    El equipo aprueba el plan  ← checkpoint obligatorio
         ↓
-/tasks → tareas e issues generados
-        ↓
-/implement → código generado
+/build → código generado
         ↓
 /submit → sala de revisión sale de DRAFT
         ↓
@@ -159,7 +142,6 @@ Cada sala de revisión tiene un checklist que indica en qué fase está:
 - [x] Spec aprobado por el equipo de desarrollo
 - [x] Plan generado
 - [ ] Plan aprobado por el equipo de desarrollo     ← esperando aquí
-- [ ] Tareas generadas
 - [ ] Código generado
 - [ ] En revisión de código
 - [ ] Publicado
