@@ -30,7 +30,10 @@
       "Bash(jq *)",
       "Bash(mkdir *)",
       "Bash(cp *)",
-      "Bash(chmod *)"
+      "Bash(chmod *)",
+      "Bash(touch *)",
+      "Bash(nc *)",
+      "Bash(bash .claude/scripts/*)"
     ],
     "deny": [
       "Bash(git push --force*)",
@@ -39,6 +42,18 @@
       "Bash(rm -rf *)",
       "Bash(rm -fr *)",
       "Bash(sudo *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/scripts/session-start.sh"
+          }
+        ]
+      }
     ]
   }
 }

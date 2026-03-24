@@ -129,9 +129,42 @@ Fusionar con los permisos existentes — no reemplazar.
 ### Prerequisitos
 
 - Claude Code Desktop instalado
-- `gh` CLI autenticado (`gh auth login`)
+- `gh` CLI instalado y autenticado (ver abajo)
 - `jq` instalado (`brew install jq` en Mac)
 - Acceso al repo con permisos de push
+
+### Instalar y autenticar `gh` CLI
+
+```bash
+brew install gh
+```
+
+Luego ejecuta el login interactivo:
+
+```bash
+gh auth login
+```
+
+El proceso pregunta lo siguiente — respuestas correctas:
+
+| Pregunta | Respuesta |
+|----------|-----------|
+| Where do you use GitHub? | **GitHub.com** |
+| What is your preferred protocol? | **HTTPS** |
+| How would you like to authenticate? | **Login with a web browser** |
+
+Al elegir el navegador:
+1. La terminal muestra un código de 8 caracteres (formato `XXXX-XXXX`)
+2. Se abre el navegador en `github.com/login/device`
+3. Introduce el código y pulsa **Continue**
+4. Autoriza la aplicación con tu cuenta de GitHub
+
+Verifica que funciona:
+
+```bash
+gh auth status
+gh pr list  # debe responder sin errores
+```
 
 ### Pasos de instalación
 

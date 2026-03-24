@@ -4,6 +4,54 @@ description: "UTILIDAD — Muestra en qué punto del flujo estás ahora mismo."
 
 ## Ejecución
 
+### 0. Verificar dependencias
+
+Comprobar que `gh` está instalado y autenticado:
+
+```bash
+which gh 2>/dev/null || echo "GH_NOT_FOUND"
+gh auth status 2>/dev/null || echo "GH_NOT_AUTHENTICATED"
+```
+
+Si el resultado contiene `GH_NOT_FOUND`, detener la ejecución y mostrar:
+
+```
+⚠️  GitHub CLI (`gh`) no está instalado. Es necesario para consultar el estado del PR.
+
+Instálalo con:
+  brew install gh        # macOS
+
+Luego autentícate:
+  gh auth login
+
+Durante el login:
+  1. Selecciona "GitHub.com"
+  2. Selecciona "HTTPS"
+  3. Elige "Login with a web browser"
+  4. Copia el código que aparece en la terminal
+  5. Se abrirá el navegador — pega el código y pulsa Continue
+
+Luego vuelve a ejecutar /status.
+```
+
+Si el resultado contiene `GH_NOT_AUTHENTICATED`, detener la ejecución y mostrar:
+
+```
+⚠️  GitHub CLI está instalado pero no autenticado.
+
+Ejecuta en tu terminal:
+  gh auth login
+
+Durante el login:
+  1. Selecciona "GitHub.com"
+  2. Selecciona "HTTPS"
+  3. Elige "Login with a web browser"
+  4. Copia el código que aparece en la terminal
+  5. Se abrirá el navegador — pega el código y pulsa Continue
+
+Luego vuelve a ejecutar /status.
+```
+
 ### 1. Recopilar estado
 
 ```bash
@@ -60,7 +108,7 @@ Si `git status --porcelain` devuelve cambios:
 
 ### Cierre de sesión
 
-Leer el contexto actual de la sesión (igual que `/context`).
+Ejecutar la lógica de `/check-and-clear` para verificar el contexto y guiar al usuario si necesita limpiar la sesión.
 
 - **🟢 / 🟡**: No mostrar nada.
 - **🟠**: Mostrar al final del informe:

@@ -173,7 +173,7 @@ Cuando el equipo apruebe el plan, ejecuta:
 
 ### Cierre de sesión
 
-Leer el contexto actual de la sesión (igual que `/context`).
+Ejecutar la lógica de `/check-and-clear` para verificar el contexto y guiar al usuario si necesita limpiar la sesión.
 
 - **🟢 / 🟡**: No mostrar nada.
 - **🟠**: Mostrar al final del informe:
