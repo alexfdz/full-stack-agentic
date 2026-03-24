@@ -11,6 +11,17 @@ This is a full-stack web application with a Python backend and TypeScript/Node 2
 **CI/CD**: GitHub Actions — automated tests, linting, Docker compose validation, Claude AI review
 **Infrastructure**: Docker Compose for local development and CI
 
+## Required CLI Tools
+
+The following tools must be installed before working on this project:
+
+| Tool | Purpose | Install |
+|------|---------|---------|
+| `uv` | Python package manager | `brew install uv` |
+| `bun` | Node/frontend package manager | `brew install bun` |
+| `docker` | Local containers | [docker.com](https://www.docker.com/) |
+| `gh` | GitHub CLI — required for PR status, review workflows, and SpecKit commands | `brew install gh && gh auth login` |
+
 Architecture: HTTP API (backend) consumed by a single-page frontend. Services run in Docker containers locally and in staging/production via GitHub Actions deployments.
 
 ```
